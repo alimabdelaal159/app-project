@@ -14,7 +14,7 @@
         validate_certs: no
         datacenter: "{{ vcenter_datacenter }}"
         cluster: "{{ vcenter_cluster }}"
-        name: "Ansible_VM"
+        name: "Ansible_VMlocaltest"
         template: "PostgreSQL"
         state: poweredon
         folder: "/{{ vcenter_datacenter }}/vm"
@@ -28,7 +28,7 @@
             gateway: "192.168.89.1"
             type: static
         disk:
-          - size_gb: 40
+          - size_gb: 100
             type: thin
             datastore: "IBM-Storage"
       delegate_to: localhost
