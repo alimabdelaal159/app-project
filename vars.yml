@@ -1,0 +1,23 @@
+vcenter_hostname: "192.168.1.22"
+vcenter_datacenter: "eSkyIT"
+vcenter_username: "Administrator@vsphere.local"
+vcenter_password: "P@$$w0rd!@^eSk!20!24"
+vcenter_validate_certs: false
+vcenter_cluster: " C3: DT & BK"
+vm_name: "Ansible_test"
+vm_guest_id: "other4xLinux64Guest"
+vm_disk_gb: 40
+vm_disk_type: "thin"
+vm_disk_datastore: "IBM-Storage"
+vm_hw_ram_mb : 4096
+vm_hw_cpu_n: 4
+vm_hw_scsi: "paravirtual"
+vm_net_name: "VLAN89"
+vm_net_type: "vmxnet3"
+vm_ip: "192.168.89.50"
+vm_net_mask: "255.255.255.0"
+vm_net_gw: "192.168.89.1"
+vm_net_dns: "192.168.89.20"
+vcenter_destination_folder: "Ansible"
+vm_state: "poweredon"
+vm_template: "PostgreSQL"
