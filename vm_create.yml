@@ -1,5 +1,5 @@
 ---
-- name: create vm 
+- name: Create VM in vCenter
   hosts: localhost
   become: false
   gather_facts: false
@@ -8,17 +8,34 @@
     - vars.yml
   
   tasks:
-    - name: create VM
+    - name: Create a folder in vCenter
+      community.vmware.vcenter_folder:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: "{{ vcenter_validate_certs | default(False) }}"
+        datacenter: "{{ vcenter_datacenter }}"
+        folder_name: "{{ vcenter_destination_folder }}"
+        folder_type: vm
+        state: present
+      register: folder_result
+      ignore_errors: yes
+
+    - name: Debug folder creation result
+      debug:
+        var: folder_result
+
+    - name: Create a VM from template
       community.vmware.vmware_guest:
         hostname: "{{ vcenter_hostname }}"
         username: "{{ vcenter_username }}"
         password: "{{ vcenter_password }}"
-        validate_certs: "{{ vcenter_validate_certs }}"
+        validate_certs: "{{ vcenter_validate_certs | default(False) }}"
         datacenter: "{{ vcenter_datacenter }}"
         template: "{{ vm_template }}"
         name: "{{ vm_name }}"
         folder: "{{ vcenter_destination_folder }}"
-        state: "{{ vm_state }}"
+        state: "{{ vm_state | default('poweredon') }}"
         guest_id: "{{ vm_guestid }}"
         cluster: "{{ vcenter_cluster }}"
         disk:
@@ -28,15 +45,20 @@
         hardware:
           memory_mb: "{{ vm_hw_ram_mb }}"
           num_cpus: "{{ vm_hw_cpu_n }}"
-          scsi: "{{ vm_hw_scsi }}"
-          hotadd_cpu: "{{ hot_add_cpu | default('True') }}"
-          hotadd_memory: "{{ hot_add_memory | default('True') }}"
+          scsi: "{{ vm_hw_scsi | default('paravirtual') }}"
+          hotadd_cpu: "{{ hot_add_cpu | default(True) }}"
+          hotadd_memory: "{{ hot_add_memory | default(True) }}"
         network:
           - name: "{{ vm_net_name }}"
             start_connected: yes
-            device_type: "{{ vm_net_type }}"
+            device_type: "{{ vm_net_type | default('vmxnet3') }}"
             type: static
             ip: "{{ vm_ip }}"
             netmask: "{{ vm_net_mask }}"
             gateway: "{{ vm_net_gw }}"
             dns_servers: "{{ vm_net_dns }}"
+      register: vm_result
+
+    - name: Debug VM creation result
+      debug:
+        var: vm_result
